@@ -3,6 +3,11 @@ package com.login;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+/**
+ * @author : yzf
+ * time   : 2019/08/05
+ * description：
+ */
 public class LoginMainActivity extends AppCompatActivity {
 
     @Override
