@@ -49,5 +49,10 @@ ext {
             "logger"                    : 'com.orhanobut:logger:2.2.0',
             //aspect
             "aspect"                    : 'org.aspectj:aspectjrt:1.8.9',
+            //guava
+            "guava"                     : 'com.google.guava:guava:22.0',
+            //lifeCycle
+            "lifecycle-runtime"         : 'android.arch.lifecycle:runtime:1.1.1',
+            "lifecycle-extensions"      : 'android.arch.lifecycle:extensions:1.1.1',
     ]
 }
