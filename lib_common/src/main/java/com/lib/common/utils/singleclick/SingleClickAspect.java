@@ -10,6 +10,11 @@ import org.aspectj.lang.annotation.Pointcut;
 
 import java.util.Calendar;
 
+/**
+ * @author : yzf
+ * time : 2019/08/05
+ * description：
+ */
 @Aspect
 public class SingleClickAspect {
 

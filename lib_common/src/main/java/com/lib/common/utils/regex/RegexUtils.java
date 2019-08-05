@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author : yzf
+ * time : 2019/08/05
+ * description：
+ */
 public class RegexUtils {
 
     private RegexUtils() {

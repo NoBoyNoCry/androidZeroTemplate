@@ -18,6 +18,11 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * @author : yzf
+ * time : 2019/08/05
+ * description：
+ */
 public final class ToastUtils {
 
     private static final int DEFAULT_COLOR = 0x12000000;

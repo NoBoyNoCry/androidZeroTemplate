@@ -9,6 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author : yzf
+ * time : 2019/08/05
+ * description：
+ */
 public class SPUtils {
 
     private static Map<String, SPUtils> sSPMap = new HashMap<>();

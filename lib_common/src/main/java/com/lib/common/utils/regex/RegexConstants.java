@@ -1,5 +1,10 @@
 package com.lib.common.utils.regex;
 
+/**
+ * @author : yzf
+ * time : 2019/08/05
+ * description：
+ */
 public class RegexConstants {
 
     /**

@@ -8,6 +8,11 @@ import com.lib.common.BuildConfig;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+/**
+ * @author : yzf
+ * time : 2019/08/05
+ * description：
+ */
 public final class Utils {
 
     @SuppressLint("StaticFieldLeak")
