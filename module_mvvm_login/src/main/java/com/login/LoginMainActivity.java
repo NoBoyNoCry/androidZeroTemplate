@@ -1,18 +1,25 @@
 package com.login;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.lib.common.base.mvvm.BaseMvvmActivity;
+import com.login.viewmodel.LoginMainViewModel;
+import com.login.databinding.LoginMainActivityDataBinding;
 
 /**
  * @author : yzf
  * time   : 2019/08/05
  * description：
  */
-public class LoginMainActivity extends AppCompatActivity {
+public class LoginMainActivity extends BaseMvvmActivity<LoginMainActivityDataBinding,LoginMainViewModel> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public int getLayoutResId() {
+        return R.layout.login_activity_main;
+    }
+
+    @Override
+    protected void initActionBar() {
+
     }
 }

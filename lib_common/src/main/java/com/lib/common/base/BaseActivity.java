@@ -71,7 +71,9 @@ public abstract class BaseActivity extends AppCompatActivity {
      *
      * @param savedInstanceState 在setContentView之前
      */
-    protected abstract void beforeInitOnCreate(Bundle savedInstanceState);
+    protected void beforeInitOnCreate(Bundle savedInstanceState){
+
+    }
 
     /**
      * 获取获取layoutResId

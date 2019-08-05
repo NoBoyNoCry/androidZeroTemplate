@@ -3,6 +3,9 @@ package com.lib.common.utils.singleclick;
 import android.util.Log;
 import android.view.View;
 
+import com.lib.common.BuildConfig;
+import com.lib.common.R;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -40,7 +43,8 @@ public class SingleClickAspect {
                 Log.d(TAG, "lastClickTime:" + lastClickTime);
             }
             long currentTime = Calendar.getInstance().getTimeInMillis();
-            if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {//过滤掉600毫秒内的连续点击
+            //过滤掉600毫秒内的连续点击
+            if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
                 view.setTag(TIME_TAG, currentTime);
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "currentTime:" + currentTime);

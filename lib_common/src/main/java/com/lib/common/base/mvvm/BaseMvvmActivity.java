@@ -29,7 +29,8 @@ public abstract class BaseMvvmActivity<VB extends ViewDataBinding, VM extends Ba
     private AlertDialog  dialog;
 
     @Override
-    protected void beforeInitOnCreate(Bundle savedInstanceState) {
+    protected void setContentView(Bundle savedInstanceState) {
+        mBinding = DataBindingUtil.setContentView(this, getLayoutResId());
         if (mViewModel == null) {
             Type type = getClass().getGenericSuperclass();
             if (type instanceof ParameterizedType) {
@@ -37,11 +38,6 @@ public abstract class BaseMvvmActivity<VB extends ViewDataBinding, VM extends Ba
                 mViewModel = (VM) ViewModelProviders.of(this).get(presenterClazz);
             }
         }
-    }
-
-    @Override
-    protected void setContentView(Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.setContentView(this, getLayoutResId());
     }
 
     @Override
