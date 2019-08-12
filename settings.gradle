@@ -1,1 +1,1 @@
-include ':app', ':lib_common', ':module_mvvm_login', ':module_play_video'
+include ':app', ':lib_common', ':module_mvvm_login', ':module_mvvm_video'
