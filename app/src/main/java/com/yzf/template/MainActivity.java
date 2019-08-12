@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.login.LoginMainActivity;
+import com.video.VideoMainActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +18,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, LoginMainActivity.class));
+            }
+        });
+        findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, VideoMainActivity.class));
             }
         });
     }
