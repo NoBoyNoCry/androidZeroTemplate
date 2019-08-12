@@ -23,6 +23,7 @@ android {
 
     sourceSets {
         main {
+            //此处检查黏贴后可能 manifest 首字母变大写
             if (isModule.toBoolean()) {
                 manifest.srcFile 'src/main/module/AndroidManifest.xml'
             } else {
@@ -42,7 +43,7 @@ android {
         }
     }
 
-    resourcePrefix "login_"
+    resourcePrefix "video_"
 
     dataBinding {
         enabled = true
