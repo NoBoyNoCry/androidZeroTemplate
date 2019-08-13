@@ -1,31 +1,25 @@
 package com.video;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
 import com.video.listen.MediaPlayListener;
 import com.video.utils.MediaPlayUtils;
-import com.video.utils.VideoUtils;
 
 /**
  * @author : yzf
- * time   : 2019/08/05
+ * time   : 2019/08/13
  * description：
  */
-public class VideoMainActivity extends AppCompatActivity {
+public class MediaPlayActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.video_activity_main);
         findViewById(R.id.btn_start).setOnClickListener(v -> {
-            if (VideoUtils.getInstance().isNeedInstall()) {
-                initPlayer();
-            } else {
-                VideoUtils.getInstance().resume();
-            }
+            initPlayer();
         });
         findViewById(R.id.btn_stop).setOnClickListener(v -> {
 
@@ -37,17 +31,37 @@ public class VideoMainActivity extends AppCompatActivity {
         String url2 = "https://uathengnan.purang.com/group1/M00/00/E3/CgqAgl0etQiAeiyEAAVow2FG_OE486.mp3";
         String url3 = "https://uathengnan.purang.com/group1/M00/00/E3/CgqAgl0etOqAC5TvAAi7yVwVgoM528.mp3";
         String url4 = "https://uathengnan.purang.com/group1/M00/00/E3/CgqAgl0etR-AN0a0AANAhZWCI7o562.mp3";
-        VideoUtils.getInstance().with(this)
-                .addUrls(url1)
+        MediaPlayUtils.getInstance().addUrls(url1)
                 .addUrls(url2)
                 .addUrls(url3)
                 .addUrls(url4)
-                .play();
+                .setListener(new MediaPlayListener() {
+                    @Override
+                    public void onAllComplete() {
+                        Log.d("loggerVideo", "onAllComplete");
+                    }
+
+                    @Override
+                    public void onComplete(String url) {
+                        Log.d("loggerVideo", "onComplete"+ url);
+                    }
+
+                    @Override
+                    public void onLoading(String url) {
+                        Log.d("loggerVideo", "onLoading" + url);
+                    }
+
+                    @Override
+                    public void onError(String url) {
+                        Log.d("loggerVideo", "onError" + url);
+                    }
+                }).init();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        VideoUtils.getInstance().releasePlayer();
+        MediaPlayUtils.getInstance().onDestroy();
     }
 }

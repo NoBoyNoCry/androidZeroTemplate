@@ -4,6 +4,7 @@
 
     <application>
         <activity android:name=".VideoMainActivity" />
+        <activity android:name=".MediaPlayActivity" />
     </application>
 
 </manifest>
