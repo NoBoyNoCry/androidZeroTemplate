@@ -1,12 +1,10 @@
 package com.video;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
-import com.video.listen.MediaPlayListener;
-import com.video.utils.MediaPlayUtils;
+import com.video.listen.VideoPlayListener;
 import com.video.utils.VideoUtils;
 
 /**
@@ -27,9 +25,7 @@ public class VideoMainActivity extends AppCompatActivity {
                 VideoUtils.getInstance().resume();
             }
         });
-        findViewById(R.id.btn_stop).setOnClickListener(v -> {
-
-        });
+        findViewById(R.id.btn_stop).setOnClickListener(v -> VideoUtils.getInstance().pause());
     }
 
     private void initPlayer() {
@@ -42,7 +38,32 @@ public class VideoMainActivity extends AppCompatActivity {
                 .addUrls(url2)
                 .addUrls(url3)
                 .addUrls(url4)
-                .play();
+                .setListener(new VideoPlayListener() {
+                    @Override
+                    public void onAllComplete() {
+                        Log.d("loggerVideo", "onAllComplete");
+                    }
+
+                    @Override
+                    public void onComplete(String url) {
+                        Log.d("loggerVideo", "onComplete url:" + url);
+                    }
+
+                    @Override
+                    public void isLoading(Boolean isFinish) {
+                        Log.d("loggerVideo", "onLoading url:" + isFinish);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.d("loggerVideo", "onError error:" + error);
+                    }
+
+                    @Override
+                    public void onStart(String url) {
+                        Log.d("loggerVideo", "onStart start:" + url);
+                    }
+                }).play();
     }
 
     @Override

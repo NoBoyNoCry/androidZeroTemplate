@@ -3,32 +3,22 @@ package com.video.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
-import com.google.android.exoplayer2.source.DefaultMediaSourceEventListener;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.MediaSourceEventListener;
-import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
+import com.video.listen.VideoPlayListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +42,9 @@ public class VideoUtils {
     private long lastPlayedPosition = 0L;
 
     private boolean pausedFromPlayer = false;
+    private int nowPlayUrls;
+
+    private VideoPlayListener listener;
 
     public static VideoUtils getInstance() {
         if (ourInstance == null) {
@@ -62,6 +55,11 @@ public class VideoUtils {
 
     private VideoUtils() {
 
+    }
+
+    public VideoUtils setListener(VideoPlayListener listener) {
+        this.listener = listener;
+        return ourInstance;
     }
 
     public VideoUtils with(Context context) {
@@ -101,6 +99,8 @@ public class VideoUtils {
             return;
         }
         shouldAutoPlay = true;
+        //重置正在播放的位置
+        nowPlayUrls = 0;
         //传入工厂对象，以便创建选择磁道对象
         trackSelector = new DefaultTrackSelector();
         //根据选择磁道创建播放器对象
@@ -132,72 +132,57 @@ public class VideoUtils {
         player.addListener(new Player.EventListener() {
 
             @Override
-            public void onTimelineChanged(Timeline timeline, @Nullable Object manifest, int reason) {
-                Log.i("loggerVideo", "-------------------------");
-                Log.d("loggerVideo", "onTimelineChanged() called with: timeline = [" + timeline + "], " +
-                        "manifest = [" + manifest + "]");
-                Log.i("loggerVideo", "-------------------------");
-            }
-
-            @Override
-            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                Log.i("loggerVideo", "-------------------------");
-                Log.d("loggerVideo", "onTracksChanged() called with: trackGroups = [" + trackGroups + "], " +
-                        "trackSelections = [" + trackSelections + "]");
-                Log.i("loggerVideo", "-------------------------");
-            }
-
-            @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                Log.i("loggerVideo", "-------------------------");
-                String stateString;
                 // actually playing media
-                if (playWhenReady && playbackState == Player.STATE_READY) {
-                    Log.d("loggerVideo", "onPlayerStateChanged: actually playing media");
-                }
+                //if (playWhenReady && playbackState == Player.STATE_READY) {
+                //Log.d("loggerVideo", "onPlayerStateChanged: actually playing media");
+                //}
                 switch (playbackState) {
                     case Player.STATE_IDLE:
-                        stateString = "ExoPlayer.STATE_IDLE      -";
                         break;
                     case Player.STATE_BUFFERING:
-                        stateString = "ExoPlayer.STATE_BUFFERING -";
+                        if (listener != null) {
+                            listener.isLoading(false);
+                        }
                         break;
                     case Player.STATE_READY:
-                        stateString = "ExoPlayer.STATE_READY     -";
+                        if (listener != null) {
+                            listener.isLoading(true);
+                        }
                         break;
                     case Player.STATE_ENDED:
-                        stateString = "ExoPlayer.STATE_ENDED     -";
+                        urls.clear();
+                        releasePlayer();
+                        if (listener != null) {
+                            listener.onComplete(urls.get(urls.size()-1));
+                            listener.onAllComplete();
+                        }
                         break;
                     default:
-                        stateString = "UNKNOWN_STATE             -";
                         break;
                 }
-                Log.d("loggerVideo", "changed state to " + stateString + " playWhenReady: " + playWhenReady);
-                Log.i("loggerVideo", "-------------------------");
             }
 
             @Override
             public void onPositionDiscontinuity(int reason) {
-                Log.i("loggerVideo", "-------------------------");
-                Log.i("loggerVideo", "onPositionDiscontinuity:" + reason);
-                Log.i("loggerVideo", "-------------------------");
+                if (reason == 0) {
+                    //一条播放完毕
+                    if (listener != null) {
+                        listener.onComplete(urls.get(nowPlayUrls));
+                        listener.onStart(urls.get(nowPlayUrls + 1));
+                    }
+                    nowPlayUrls++;
+                }
             }
 
             @Override
             public void onPlayerError(ExoPlaybackException error) {
-                Log.i("loggerVideo", "-------------------------");
-                Log.i("loggerVideo", "ExoPlaybackException:" + error.toString());
-                Log.i("loggerVideo", "-------------------------");
-            }
-
-            @Override
-            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-                Log.i("loggerVideo", "-------------------------");
-                Log.i("loggerVideo", "playbackParameters:" + playbackParameters.toString());
-                Log.i("loggerVideo", "-------------------------");
+                ///加载失败
+                listener.onError("加载失败");
+                releasePlayer();
             }
         });
-        //添加数据源到播放器中
+        // 添加数据源到播放器
         player.prepare(concatenatedSource);
     }
 
@@ -232,8 +217,6 @@ public class VideoUtils {
             lastPlayedPosition = player.getCurrentPosition();
             player.setPlayWhenReady(false);
             pausedFromPlayer = false;
-        } else {
-            pausedFromPlayer = true;
         }
     }
 
