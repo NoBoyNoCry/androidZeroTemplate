@@ -41,7 +41,6 @@ public class VideoUtils {
 
     private long lastPlayedPosition = 0L;
 
-    private boolean pausedFromPlayer = false;
     private int nowPlayUrls;
 
     private VideoPlayListener listener;
@@ -151,12 +150,12 @@ public class VideoUtils {
                         }
                         break;
                     case Player.STATE_ENDED:
-                        urls.clear();
-                        releasePlayer();
                         if (listener != null) {
                             listener.onComplete(urls.get(urls.size()-1));
                             listener.onAllComplete();
                         }
+                        urls.clear();
+                        releasePlayer();
                         break;
                     default:
                         break;
@@ -216,8 +215,15 @@ public class VideoUtils {
         if (player.getPlayWhenReady()) {
             lastPlayedPosition = player.getCurrentPosition();
             player.setPlayWhenReady(false);
-            pausedFromPlayer = false;
         }
+    }
+
+    /**
+     * 是否播放中
+     * return
+     */
+    public Boolean isPlaying() {
+        return player != null && player.getPlayWhenReady();
     }
 
     /**
@@ -227,12 +233,7 @@ public class VideoUtils {
         if (player == null) {
             return;
         }
-
-        if (player.getPlayWhenReady()) {
-            return;
-        }
-
-        if (!pausedFromPlayer) {
+        if (!player.getPlayWhenReady()) {
             player.seekTo(lastPlayedPosition - 500 < 0 ? 0 : lastPlayedPosition - 500);
             player.setPlayWhenReady(true);
         }
